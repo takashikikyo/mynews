@@ -19,16 +19,16 @@ class ProfileController extends Controller
       $profiles = new Profiles;
       $form = $request->all();
       
-      if (isset($form['image'])) {
-          $path = $request->file('image')->store('public/image');
-          $profiles->image_path = basename($path);
-      } else {
-          $profiles->image_path = null;
-      }
+    //   if (isset($form['image'])) {
+    //       $path = $request->file('image')->store('public/image');
+    //       $profiles->image_path = basename($path);
+    //   } else {
+    //       $profiles->image_path = null;
+    //   }
       
       unset($form['_token']);
       
-      unset($form['image']);
+    //   unset($form['image']);
       
       $profiles->fill($form);
       $profiles->save();
