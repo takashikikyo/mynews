@@ -19,7 +19,7 @@ class CreateProfilesTable extends Migration
             $table->string('gender');
             $table->string('hobby'); 
             $table->string('introduction');
-            $table->timestamps = false;
+            $table->timestamps();
         });
     }
 
