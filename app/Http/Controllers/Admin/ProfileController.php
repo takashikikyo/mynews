@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Profiles;
+use App\Profile;
+use App\ProfileHistory;
+use Carbon\Carbon;
 
 class ProfileController extends Controller
 {
@@ -14,9 +16,9 @@ class ProfileController extends Controller
     
     public function create(Request $request)
     {
-      $this->validate($request, Profiles::$rules);
+      $this->validate($request, Profile::$rules);
       
-      $profile = new Profiles;
+      $profile = new Profile;
       $form = $request->all();
       
       unset($form['_token']);
@@ -32,7 +34,7 @@ class ProfileController extends Controller
     public function edit(Request $request)
     {
     // Profiles Modelからデータを取得する
-    $profile = Profiles::find($request->id);
+    $profile = Profile::find($request->id);
     if (empty($profile)) {
     abort(404);
     }
@@ -42,9 +44,9 @@ class ProfileController extends Controller
     public function update(Request $request) 
     {
         // Validationをかける
-      $this->validate($request, Profiles::$rules);
+      $this->validate($request, Profile::$rules);
       // Profiles Modelからデータを取得する
-      $profile = Profiles::find($request->id);
+      $profile = Profile::find($request->id);
       // 送信されてきたフォームデータを格納する
       $profile_form = $request->all();
 
@@ -52,14 +54,20 @@ class ProfileController extends Controller
       unset($profile_form['_token']);
       // 該当するデータを上書きして保存する
       $profile->fill($profile_form)->save();
-        return redirect('admin/profile/create');
+      
+      $profilehistories = new ProfileHistory;
+      $profilehistories->profile_id = $profile->id;
+      $profilehistories->edited_at = Carbon::now();
+      $profilehistories->save();
+      
+      return redirect('admin/profile/edit');
     }
     
     
     public function delete(Request $request)
     {
       // 該当するNews Modelを取得
-      $profile = Profiles::find($request->id);
+      $profile = Profile::find($request->id);
       // 削除する
       $profile->delete();
       return redirect('admin/profile/create');
